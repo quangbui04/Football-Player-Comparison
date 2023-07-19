@@ -3,11 +3,54 @@
     <head>
         <title>Comparison between 2 Players</title>
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <style>
+            .chart-container {
+                display: flex;
+                flex-direction: row;
+            }
+
+            .chart-container div {
+                flex: 1;
+            }
+
+            #chart1 {
+                max-width: 30%; 
+                margin-left: 10%;
+            }
+
+            #chart2 {
+                max-width: 61%; 
+            }
+
+            #radar1 {
+                max-width: 60%; 
+                margin-left: 10%;
+            }
+
+            #radar2 {
+                max-width: 50%; 
+            }
+        </style>
     </head>
     <body>
         <h1>Result</h1>
-        <div>
-            {{ plot_div|safe }}
+        <div class="chart-container">
+            <h3>{{ player1 }}</h3>
+            <div id="chart2">
+                {{ plot_div2|safe }}
+            </div>
+            <div id="chart1">
+                {{ plot_div1|safe }}
+            </div>
+            <h3>{{ player2 }}</h3>
+        </div>
+        <div class="chart-container">
+            <div id="radar2">
+                {{ radar2|safe }}
+            </div>
+            <div id="radar1">
+                {{ radar1|safe }}
+            </div>
         </div>
     </body>
 </html>

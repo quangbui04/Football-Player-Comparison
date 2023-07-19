@@ -175,7 +175,7 @@ def plot_players_right(player_name, attribute, df):
     
     fig = go.Figure(go.Bar(
             x=player.values[0],
-            y=description,
+            # y=description,
             orientation='h',
             marker=dict(
             color=cluster_dictionary[color],
@@ -183,8 +183,12 @@ def plot_players_right(player_name, attribute, df):
         )))
     
     fig.update_layout(
-        yaxis_title="Features",
+        # yaxis_title="Features",
         xaxis=dict(side='top'),
+        yaxis=dict(
+            tickvals=[],
+            ticktext=[],
+        ),
         plot_bgcolor='rgba(0,0,0,0)',
         bargap=0.1,
         height=500
