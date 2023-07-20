@@ -15,7 +15,6 @@
 
             #chart1 {
                 max-width: 30%; 
-                margin-left: 10%;
             }
 
             #chart2 {
@@ -30,19 +29,44 @@
             #radar2 {
                 max-width: 50%; 
             }
+            #right-player{
+                margin-left: 70%;
+            }
+            .description {
+                display: flex;
+                flex-direction: row;
+            }
+            
         </style>
+
     </head>
     <body>
         <h1>Result</h1>
+        <div class="description">
+            <div>
+                <h3>{{ player1 }}</h3>
+                <p>Age: {{ age1 }}</p>
+                <p>Born: {{ year1 }}</p>
+                <p>Position: {{ pos1 }}</p>
+                <p>Squad: {{ squad1 }}</p>
+            </div>
+            <div id="right-player">
+                <h3>{{ player2 }}</h3>
+                <p>Age: {{ age2 }}</p>
+                <p>Born: {{ year2 }}</p>
+                <p>Position: {{ pos2 }}</p>
+                <p>Squad: {{ squad2 }}</p>
+            </div>
+        </div>
+        
         <div class="chart-container">
-            <h3>{{ player1 }}</h3>
             <div id="chart2">
                 {{ plot_div2|safe }}
             </div>
             <div id="chart1">
                 {{ plot_div1|safe }}
             </div>
-            <h3>{{ player2 }}</h3>
+            
         </div>
         <div class="chart-container">
             <div id="radar2">
@@ -51,6 +75,7 @@
             <div id="radar1">
                 {{ radar1|safe }}
             </div>
+            
         </div>
     </body>
 </html>

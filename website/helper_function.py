@@ -183,7 +183,7 @@ def plot_players_right(player_name, attribute, df):
         )))
     
     fig.update_layout(
-        # yaxis_title="Features",
+        yaxis_title="Features",
         xaxis=dict(side='top'),
         yaxis=dict(
             tickvals=[],
