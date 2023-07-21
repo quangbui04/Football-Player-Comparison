@@ -9,7 +9,19 @@ df_radar = pd.read_csv("/Users/buinhatquang/Desktop/playercomparison/website/dat
 
 all_players = list(df_players["Player"].values)
 
-cluster_dictionary = ["green", "red", "purple", "steelblue", "gold"]
+ranking_dict = {
+    "FW": [0, 2, 4, 1, 3],
+    "FWMF": [4, 1, 2, 0, 3],
+    "FWDF": [3, 0, 4, 2, 1],
+    "MF": [1, 4, 3, 2, 0],
+    "MFDF": [0, 2, 3, 4, 1],
+    "MFFW": [1, 3, 2, 1, 4],
+    "DF": [3, 4, 0, 1, 3],
+    "DFMF": [0, 4, 3, 2, 1],
+    "DFFW": [4, 1, 3, 2, 0]
+}
+
+color_ranking = ["green", "red", "purple", "steelblue", "gold"]
 general_info = ["Player", "Nation", "Pos", "Squad", "Age", "Born"]
 playing_time = ["MP", "Starts", "Min"]
 forward_features = ["Goals", "Shots", "SoT", "G/Sh", "G/SoT", "ShoDist", "PKatt", "GCA", "SCA", "Off", "PKwon", "PKcon", "ScaDrib", 
@@ -144,6 +156,8 @@ acronyms = {"Rk": "Rank", "Player": "Player's name", "Nation": "Player's nation"
            }
 
 
+
+
 def get_info(player_name, attribute, df):
     '''
     Get information attribute given the player name and a list of attributes
@@ -151,8 +165,11 @@ def get_info(player_name, attribute, df):
     if player_name not in all_players:
         return "No player found"
     
-    return df[df["Player"] == player_name][attribute], list(df[df["Player"] == player_name]["Class"].values)[0]
-
+    class_ranking = ranking_dict[list(df[df["Player"] == player_name]["Pos"].values)[0]]
+    player_class = list(df[df["Player"] == player_name]["Class"].values)[0]
+    color = class_ranking.index(player_class)
+    
+    return df[df["Player"] == player_name][attribute], color
 def attribute_description(attribute):
     '''
     Get the description of each attribute inside the list
@@ -178,7 +195,7 @@ def plot_players_right(player_name, attribute, df):
             # y=description,
             orientation='h',
             marker=dict(
-            color=cluster_dictionary[color],
+            color=color_ranking[color],
             line=dict(color='black', width=0.5)
         )))
     
@@ -212,7 +229,7 @@ def plot_players_left(player_name, attribute, df):
             y=description,
             orientation='h',
             marker=dict(
-            color=cluster_dictionary[color],
+            color=color_ranking[color],
             line=dict(color='black', width=0.5)
         )))
 
@@ -240,5 +257,5 @@ def plot_radar(player_name,df):
     
     fig = px.line_polar(player_info, r=list(player_info.values[0]), theta=list(player_info.columns), line_close=True)
     fig.update_layout(polar=dict(radialaxis=dict(range=[0, 1], showticklabels=False)), plot_bgcolor='white')
-    fig.update_traces(fill='toself', fillcolor=cluster_dictionary[color], line_color='black', opacity=0.8)
+    fig.update_traces(fill='toself', fillcolor=color_ranking[color], line_color='black', opacity=0.8)
     return fig

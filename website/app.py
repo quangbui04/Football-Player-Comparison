@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 import plotly.express as px
 import plotly.offline as opy
-from helper_function import plot_players_right, plot_players_left, df_players, forward_features, plot_radar, df_radar, get_info, general_info
+from helper_function import plot_players_right, plot_players_left, df_players, forward_features, plot_radar, df_radar, get_info, general_info, all_players
 
 app = Flask(__name__)
 
@@ -13,8 +13,12 @@ def home():
 def results():
     player1 = str(request.form.get("player1-input"))
     player2 = str(request.form.get("player2-input"))
-    fig1 = plot_players_right(player1, forward_features, df_players)
-    fig2 = plot_players_left(player2, forward_features, df_players)
+
+    if player1 not in all_players or player2 not in all_players:
+        return render_template("noplayer.html")
+
+    fig1 = plot_players_left(player1, forward_features, df_players)
+    fig2 = plot_players_right(player2, forward_features, df_players)
     radar1 = plot_radar(player1, df_radar)
     radar2 = plot_radar(player2, df_radar)
     general_info1 = list(get_info(player1, general_info, df_players)[0].values[0])
