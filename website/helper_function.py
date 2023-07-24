@@ -3,11 +3,18 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import plotly.express as px
 import plotly.graph_objects as go
+import openai
 
 df_players = pd.read_csv("/Users/buinhatquang/Desktop/playercomparison/website/data/players.csv")
 df_radar = pd.read_csv("/Users/buinhatquang/Desktop/playercomparison/website/data/radar.csv")
 
 all_players = list(df_players["Player"].values)
+openai.api_key = "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"
+
+forward_position = ["FW", "FWMF", "FWDF"]
+midfield_position = ["MF", "MFDF", "MFFW"]
+defender_position = ["DF", "DFMF", "DFFW"]
+gk_position = ["GK"]
 
 ranking_dict = {
     "FW": [0, 2, 4, 1, 3],
@@ -158,6 +165,16 @@ acronyms = {"Rk": "Rank", "Player": "Player's name", "Nation": "Player's nation"
 
 
 
+def get_features(player_name, df):
+    if df[df["Player"] == player_name]["Pos"].values[0] in forward_position:
+        return forward_features
+    elif df[df["Player"] == player_name]["Pos"].values[0] in midfield_position:
+        return midfielder_features
+    elif df[df["Player"] == player_name]["Pos"].values[0] in defender_position:
+        return defender_features
+    else:
+        return "GK"
+
 def get_info(player_name, attribute, df):
     '''
     Get information attribute given the player name and a list of attributes
@@ -170,6 +187,7 @@ def get_info(player_name, attribute, df):
     color = class_ranking.index(player_class)
     
     return df[df["Player"] == player_name][attribute], color
+
 def attribute_description(attribute):
     '''
     Get the description of each attribute inside the list
@@ -186,7 +204,7 @@ def plot_players_right(player_name, attribute, df):
     
     if player_name not in all_players:
         return "No player found"
-    
+
     player, color = get_info(player_name, attribute, df)
     description = attribute_description(attribute)
     
@@ -220,7 +238,7 @@ def plot_players_left(player_name, attribute, df):
     
     if player_name not in all_players:
         return "No player found"
-    
+
     player, color = get_info(player_name, attribute, df)
     description = attribute_description(attribute)
     
@@ -259,3 +277,23 @@ def plot_radar(player_name,df):
     fig.update_layout(polar=dict(radialaxis=dict(range=[0, 1], showticklabels=False)), plot_bgcolor='white')
     fig.update_traces(fill='toself', fillcolor=color_ranking[color], line_color='black', opacity=0.8)
     return fig
+
+def player_to_text(player1, player2, attribute):
+    player1_text = ""
+    player2_text = ""
+    for i in range(len(list(df_players[general_info + attribute].columns))):
+        player1_text += str(list(df_players[df_players["Player"] == player1][general_info + attribute].columns)[i]) + ": "
+        player1_text += str(df_players[df_players["Player"] == player1][general_info + attribute].values[0][i]) + ", "
+        player1_text += str(list(df_players[df_players["Player"] == player2][general_info + attribute].columns)[i]) + ": "
+        player1_text += str(df_players[df_players["Player"] == player2][general_info + attribute].values[0][i]) + ", "
+    return player1_text, player2_text
+
+def compare_stats_between_examples(player1, player2):
+    prompt = f"Write an analysis about some of the main given attributes between the following two football players:\n1. {player1}\n2. {player2}\n"
+    response = openai.Completion.create(
+        engine="text-davinci-002",
+        prompt=prompt,
+        max_tokens=1500
+    )
+
+    return response

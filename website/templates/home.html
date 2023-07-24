@@ -5,12 +5,17 @@
     </head>
     <body>
         <div>
-            <h1>Football player comparison</h1>
+            <h1>Football player comparison 2022-2023</h1>
         </div>
         <form method="post" action="/results">
             <p>Input 2 players</p>
             <input type="text" name="player1-input">
             <input type="text" name="player2-input">
+            <select name="position" id="pos">
+                <option value="forward">forward</option>
+                <option value="midfield">midfield</option>
+                <option value="defend">defend</option>
+            </select>
             <input type=submit value="Submit" name="submit_btn">
         </form>
     </body>
