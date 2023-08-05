@@ -1,48 +1,56 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 import plotly.express as px
 import plotly.graph_objects as go
+from sklearn.preprocessing import MinMaxScaler
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans, AgglomerativeClustering
+from sklearn.metrics import silhouette_score
+from sklearn.metrics.pairwise import cosine_similarity
+import warnings
 import openai
 
+from sklearn.decomposition import PCA
 df_players = pd.read_csv("/Users/buinhatquang/Desktop/playercomparison/website/data/players.csv")
 df_radar = pd.read_csv("/Users/buinhatquang/Desktop/playercomparison/website/data/radar.csv")
 
 all_players = list(df_players["Player"].values)
-openai.api_key = "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"
+openai.api_key = "KEY"
 
 forward_position = ["FW", "FWMF", "FWDF"]
 midfield_position = ["MF", "MFDF", "MFFW"]
 defender_position = ["DF", "DFMF", "DFFW"]
-gk_position = ["GK"]
 
-ranking_dict = {
-    "FW": [0, 2, 4, 1, 3],
-    "FWMF": [4, 1, 2, 0, 3],
-    "FWDF": [3, 0, 4, 2, 1],
-    "MF": [1, 4, 3, 2, 0],
-    "MFDF": [0, 2, 3, 4, 1],
-    "MFFW": [1, 3, 2, 1, 4],
-    "DF": [3, 4, 0, 1, 3],
-    "DFMF": [0, 4, 3, 2, 1],
-    "DFFW": [4, 1, 3, 2, 0]
-}
-
-color_ranking = ["green", "red", "purple", "steelblue", "gold"]
+forward_category = ["Ball carrier", "Goal scorer", "Well rounded", "Injury prone / Sub"]
+midfield_category = ["Defensive-minded midfielder", "Attacking/Ball carrying midfielder", "Dynamic midfielder", "Injury prone / Sub"]
+defend_category = ["Well rounded defender", "Aggressive defender", "Ball-playing defender", "Injury prone / Sub"]
+color_ranking = ["steelblue", "green", "gold", "red"]
 general_info = ["Player", "Nation", "Pos", "Squad", "Age", "Born"]
 playing_time = ["MP", "Starts", "Min"]
-forward_features = ["Goals", "Shots", "SoT", "G/Sh", "G/SoT", "ShoDist", "PKatt", "GCA", "SCA", "Off", "PKwon", "PKcon", "ScaDrib", 
-                    "ScaPassLive", "TouAttPen", "Car3rd", "Fld"]
-midfielder_features = ["PasTotCmp", "PasTotCmp%", "PasTotDist", "PasTotPrgDist", "Assists", "PasAss", "Pas3rd", "Crs", "PasCmp", 
-                       "PasOff", "PasBlocks", "SCA", "ScaPassLive", "ScaPassDead", "ScaDrib", "ScaSh", "ScaFld", "GCA", "GcaPassLive", 
-                       "GcaPassDead", "GcaDrib", "GcaSh", "GcaFld", "Tkl", "TklWon", "TklDef3rd", "TklMid3rd", "TklAtt3rd", "TklDri", 
-                       "TklDriAtt", "TklDri%", "TklDriPast", "Blocks", "BlkSh", "Int", "Recov"]
-defender_features = ["Tkl", "TklWon", "TklDef3rd", "TklMid3rd", "TklAtt3rd", "TklDri", "TklDriAtt", "TklDri%", "TklDriPast", "Blocks", 
-                     "BlkSh", "Int", "Recov", "AerWon", "AerLost", "AerWon%"]
 goals_bestfeatures = ["Goals", "Shots", "SoT"]
 passes_bestfeatures = ["PasTotCmp", "Assists"]
 skill_bestfeatures = ["SCA", "ScaDrib"]
 defense_bestfeatures = ["Tkl", "Int"]
+forward_features_reduced = ["Goals", "Shots", "SCA", "Assists", "Car3rd", "ScaFld", "Carries", "CarTotDist", "CarPrgDist", 'CPA', "ScaDrib"]
+midfielder_features_reduced = ["Goals","PasTotCmp", "Assists", "PasAss", "Pas3rd", "Crs", "PasCmp", "SCA", "ScaDrib", "GCA", "Tkl", "TklWon", "TklDri", 
+                       "TklDriAtt", "Blocks", "BlkSh", "Int", "Recov", "Carries", "CarPrgDist" , "Fld"]
+defender_features_reduced = ["PasTotCmp", "PasTotDist", "PasTotPrgDist", "Tkl", "TklWon", "TklDef3rd", "TklMid3rd", "TklAtt3rd", "TklDri", "TklDriAtt", "TklDriPast", "Blocks", 
+                     "BlkSh", "Int", "Tkl+Int", "Recov", "AerWon", "AerLost", "Carries", "CarTotDist", "CarPrgDist", "CrdY", "CrdR","Fls", "Clr"]
+
+forward_features = ["Goals", "Shots", "SoT", "G/Sh", "G/SoT", "ShoDist", "GCA", "SCA", "Off", "PKwon", "ScaDrib", "Assists",
+                    "ScaPassLive", "Car3rd", "ScaFld", "ToAtt", "ToSuc", "Carries", "CarTotDist", "CarPrgDist", 'CPA', "CarMis", "CarDis"]
+midfielder_features = ["Goals","PasTotCmp", "PasTotCmp%", "PasTotDist", "PasTotPrgDist", "Assists", "PasAss", "Pas3rd", "Crs", "PasCmp", 
+                       "PasOff", "PasBlocks", "SCA", "ScaPassLive", "ScaPassDead", "ScaDrib", "ScaSh", "ScaFld", "GCA", "GcaPassLive", 
+                       "GcaPassDead", "GcaDrib", "GcaSh", "GcaFld", "Tkl", "TklWon", "TklDef3rd", "TklMid3rd", "TklAtt3rd", "TklDri", 
+                       "TklDriAtt", "TklDri%", "TklDriPast", "Blocks", "BlkSh", "Int", "Recov", "Carries", "CarTotDist", "CarPrgDist" , "Fld"]
+defender_features = ["PasTotCmp", "PasTotDist", "PasTotPrgDist", "Tkl", "TklWon", "TklDef3rd", "TklMid3rd", "TklAtt3rd", "TklDri", "TklDriAtt", "TklDriPast", "Blocks", 
+                     "BlkSh", "Int", "Tkl+Int", "Recov", "AerWon", "AerLost", "Carries", "CarTotDist", "CarPrgDist", "CrdY", "CrdR","Fls", "Clr"]
+
+features_sum = ["Goals", "MP", "Starts", "Min", "Assists"]
+
+
 acronyms = {"Rk": "Rank", "Player": "Player's name", "Nation": "Player's nation", "Pos": "Position",
             "Squad": "Squad’s name", "Comp": "League that squat occupies", "Age": "Player's age",
             "Born": "Year of birth", "MP": "Matches played", "Starts": "Matches started",
@@ -165,16 +173,6 @@ acronyms = {"Rk": "Rank", "Player": "Player's name", "Nation": "Player's nation"
 
 
 
-def get_features(player_name, df):
-    if df[df["Player"] == player_name]["Pos"].values[0] in forward_position:
-        return forward_features
-    elif df[df["Player"] == player_name]["Pos"].values[0] in midfield_position:
-        return midfielder_features
-    elif df[df["Player"] == player_name]["Pos"].values[0] in defender_position:
-        return defender_features
-    else:
-        return "GK"
-
 def get_info(player_name, attribute, df):
     '''
     Get information attribute given the player name and a list of attributes
@@ -182,11 +180,9 @@ def get_info(player_name, attribute, df):
     if player_name not in all_players:
         return "No player found"
     
-    class_ranking = ranking_dict[list(df[df["Player"] == player_name]["Pos"].values)[0]]
-    player_class = list(df[df["Player"] == player_name]["Class"].values)[0]
-    color = class_ranking.index(player_class)
-    
+    color = list(df[df["Player"] == player_name]["Class"].values)[0]
     return df[df["Player"] == player_name][attribute], color
+
 
 def attribute_description(attribute):
     '''
@@ -210,7 +206,7 @@ def plot_players_right(player_name, attribute, df):
     
     fig = go.Figure(go.Bar(
             x=player.values[0],
-            # y=description,
+            y=description,
             orientation='h',
             marker=dict(
             color=color_ranking[color],
@@ -220,13 +216,9 @@ def plot_players_right(player_name, attribute, df):
     fig.update_layout(
         yaxis_title="Features",
         xaxis=dict(side='top'),
-        yaxis=dict(
-            tickvals=[],
-            ticktext=[],
-        ),
         plot_bgcolor='rgba(0,0,0,0)',
-        bargap=0.1,
-        height=500
+        bargap=0.2,
+        height=600
     )
     
     return fig
@@ -238,7 +230,7 @@ def plot_players_left(player_name, attribute, df):
     
     if player_name not in all_players:
         return "No player found"
-
+    
     player, color = get_info(player_name, attribute, df)
     description = attribute_description(attribute)
     
@@ -255,8 +247,7 @@ def plot_players_left(player_name, attribute, df):
         xaxis = dict(side='top', range=[max(player.values[0]), 0]),
         yaxis = dict(side='right'),
         plot_bgcolor='rgba(0,0,0,0)',
-        bargap=0.1,
-        height=500)
+        bargap=0.2,)
 
     return fig
 
@@ -277,6 +268,22 @@ def plot_radar(player_name,df):
     fig.update_layout(polar=dict(radialaxis=dict(range=[0, 1], showticklabels=False)), plot_bgcolor='white')
     fig.update_traces(fill='toself', fillcolor=color_ranking[color], line_color='black', opacity=0.8)
     return fig
+
+def similar_players(player_name, attribute, df):
+    player_info, color = get_info(player_name, attribute + ["Player", "Position Category"], df)
+    df_train = df[df["Position Category"]==get_info(player_name, ["Position Category"], df_radar)[0]["Position Category"].values[0]]
+    
+    cosine_matrix = pd.DataFrame(cosine_similarity(df_train[attribute]))
+    cosine_matrix.reset_index(inplace=True, drop=True)
+    df_train.reset_index(inplace=True, drop=True)
+    df_full = pd.concat([df_train["Player"], cosine_matrix], axis=1)
+    
+    player_name_list = list(df_full["Player"].values)
+    player_coef = list(df_full[df_full["Player"]==player_name].values[0])[1:]
+    player_sorted = sorted(zip(player_name_list, player_coef), key=lambda x: x[1], reverse=True)
+    players = [x[0] for x in player_sorted]
+    
+    return players
 
 def player_to_text(player1, player2, attribute):
     player1_text = ""
