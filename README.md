@@ -20,7 +20,7 @@ Welcome to the Football Player Comparison and Recommendation Web App! This proje
 
 - **Pandas**: A powerful data manipulation library for managing and processing the football player dataset.
 
-- **scikit-learn**: Used for building the KNN models to cluster players and calculate cosine similarity for player recommendations.
+- **scikit-learn**: Used for building the KNN models to cluster players with similar styles and calculate cosine similarity for player recommendations.
 
 - **Plotly**: Provides the tools to create interactive and visually appealing bar charts and radar charts for player attribute comparison.
 
