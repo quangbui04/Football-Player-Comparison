@@ -42,7 +42,7 @@ Welcome to the Football Player Comparison and Recommendation Web App! This proje
 
 ## Exploratory Data Analysis (EDA) Notebook
 
-Check out the Jupyter notebook to delve into the data preprocessing, KNN clustering, and other details of the project's machine learning components.
+Check out the Jupyter notebook to delve into the data preprocessing, KNN and Agglomerative modeling, fine-tuning, and other details of the project's machine learning components [here](https://www.kaggle.com/code/quangnhatbui/football-players-visualization#Modeling).
 
 ## Credits
 
