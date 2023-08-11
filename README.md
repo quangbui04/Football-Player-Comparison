@@ -10,7 +10,7 @@ Welcome to the Football Player Comparison and Recommendation Web App! This proje
 
 - **Analysis Paragraph Generation**: Dive deeper into player comparisons with automatically generated analysis paragraphs written by GPT-3.5, providing insights into the strengths and weaknesses of each player.
 
-- **Exploratory Data Analysis (EDA)**: Explore the dataset through a Jupyter notebook that showcases how players were clustered using KNN and Agglomerative models. Learn about the data preprocessing, training, evaluation, and tuning process.
+- **Exploratory Data Analysis (EDA)**: Explore the dataset through a Jupyter notebook that showcases how players were clustered using KMeans and Agglomerative models. Learn about the data preprocessing, training, evaluation, and tuning process.
 
 ## Technologies Used
 
@@ -20,7 +20,7 @@ Welcome to the Football Player Comparison and Recommendation Web App! This proje
 
 - **Pandas**: A powerful data manipulation library for managing and processing the football player dataset.
 
-- **scikit-learn**: Used for building the KNN and Agglomerative clustering models to cluster players with similar styles and calculate cosine similarity for player recommendations.
+- **scikit-learn**: Used for building the KMeans and Agglomerative clustering models to cluster players with similar styles and calculate cosine similarity for player recommendations.
 
 - **Plotly**: Provides the tools to create interactive and visually appealing bar charts and radar charts for player attribute comparison.
 
@@ -42,7 +42,7 @@ Welcome to the Football Player Comparison and Recommendation Web App! This proje
 
 ## Exploratory Data Analysis (EDA) Notebook
 
-Check out the Jupyter notebook to delve into the data preprocessing, KNN and Agglomerative modeling, fine-tuning, and other details of the project's machine learning components [here](https://www.kaggle.com/code/quangnhatbui/football-players-visualization#Modeling).
+Check out the Jupyter notebook to delve into the data preprocessing, KMeans and Agglomerative modeling, fine-tuning, and other details of the project's machine learning components [here](https://www.kaggle.com/code/quangnhatbui/football-players-visualization#Modeling).
 
 ## Credits
 
