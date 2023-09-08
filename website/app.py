@@ -13,6 +13,10 @@ def home():
 def results():
     player1 = str(request.form.get("player1-input"))
     player2 = str(request.form.get("player2-input"))
+    if player1 not in all_players:
+        return render_template("noplayer.html", player=player1)
+    elif player2 not in all_players:
+        return render_template("noplayer.html", player=player2)
     position_submitted = str(request.form.get("position"))
     attributes = []
     category = []

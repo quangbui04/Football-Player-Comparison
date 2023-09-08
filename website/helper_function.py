@@ -17,7 +17,7 @@ df_players = pd.read_csv("/Users/buinhatquang/Desktop/playercomparison/website/d
 df_radar = pd.read_csv("/Users/buinhatquang/Desktop/playercomparison/website/data/radar.csv")
 
 all_players = list(df_players["Player"].values)
-openai.api_key = "KEY"
+openai.api_key = "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"
 
 forward_position = ["FW", "FWMF", "FWDF"]
 midfield_position = ["MF", "MFDF", "MFFW"]
