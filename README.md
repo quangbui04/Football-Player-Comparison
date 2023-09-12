@@ -1,6 +1,6 @@
 # Football Player Comparison and Recommendation Web App
 
-Welcome to the Football Player Comparison and Recommendation Web App! This project leverages the power of machine learning, GPT-3.5, Flask, Python, Pandas, scikit-learn, and Plotly to provide an interactive platform for comparing and analyzing football players.
+Welcome to the Football Player Comparison and Recommendation Web App! This project leverages the power of machine learning, GPT-3.5, Flask, Python, Pandas, scikit-learn, and Plotly to provide an interactive platform for comparing and analyzing football players. The website is hosted [here](http://quangbui04.pythonanywhere.com/results).
 
 ## Features
 
